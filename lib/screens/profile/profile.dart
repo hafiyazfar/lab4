@@ -122,7 +122,7 @@ class ProfileScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TextStyleThird(
-                          text: "You\'ve got a new award",
+                          text: "You've got a new award",
                           isColor: null,
                         ),
                         Text(
@@ -217,7 +217,7 @@ class ProfileScreen extends StatelessWidget {
                       isColor: false,
                     ),
                     AppColumnTextLayout(
-                      topText: "McDonald\'s",
+                      topText: "McDonald's",
                       bottomText: "Received from",
                       alignment: CrossAxisAlignment.end,
                       isColor: false,

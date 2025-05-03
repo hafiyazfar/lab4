@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ticket_app/base/res/styles/app_styles.dart';
 import 'package:ticket_app/base/utils/all_json.dart';
+import 'package:ticket_app/bloc/text_expansion_blocs.dart';
+import 'package:ticket_app/bloc/text_expansion_events.dart';
+import 'package:ticket_app/bloc/text_expansion_states.dart';
 import 'package:ticket_app/controller/text_expansion_controller.dart';
 import 'package:get/get.dart';
+import 'package:ticket_app/provider/text_expansion_provider.dart';
 
 class HotelDetail extends StatefulWidget {
   const HotelDetail({super.key});
@@ -13,6 +19,7 @@ class HotelDetail extends StatefulWidget {
 
 class _HotelDetailState extends State<HotelDetail> {
   late int index = 0;
+  @override
   void didChangeDependencies() {
     var args = ModalRoute.of(context)!.settings.arguments as Map;
     print(args["index"]);
@@ -100,7 +107,7 @@ class _HotelDetailState extends State<HotelDetail> {
                   style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                 ),
               ),
-              Container(
+              SizedBox(
                 height: 200.0,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
@@ -128,35 +135,42 @@ class ExpandedTextWidget extends StatelessWidget {
   ExpandedTextWidget({super.key, required this.text});
   final String text;
 
-  final TextExpansionController controller = Get.put(TextExpansionController());
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      var textWidget = Text(
-        text,
-        maxLines: controller.isExpanded.value ? null : 9,
-        overflow:
-            controller.isExpanded.value
-                ? TextOverflow.visible
-                : TextOverflow.ellipsis,
-      );
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          textWidget,
-          GestureDetector(
-            onTap: () {
-              controller.toggleExpansion();
-            },
-            child: Text(
-              controller.isExpanded.value ? 'Less' : 'More',
-              style: AppStyles.textStyle.copyWith(
-                color: AppStyles.primaryColor,
+    //var provider = ref.watch(textExpansionNotifierProvider);
+
+    return BlocBuilder<TextExpansionBloc, TextExpansionStates>(
+      builder: (context, state) {
+        if (state is isExpandedState) {
+          var isExpanded = state.isExpanded;
+          var textWidget = Text(
+            text,
+            maxLines: isExpanded ? null : 9,
+            overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+          );
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              textWidget,
+              GestureDetector(
+                onTap: () {
+                  context.read<TextExpansionBloc>().add(
+                    isExpandedEvent(!isExpanded),
+                  );
+                },
+                child: Text(
+                  isExpanded ? 'Less' : 'More',
+                  style: AppStyles.textStyle.copyWith(
+                    color: AppStyles.primaryColor,
+                  ),
+                ),
               ),
-            ),
-          ),
-        ],
-      );
-    });
+            ],
+          );
+        } else {
+          return Container();
+        }
+      },
+    );
   }
 }

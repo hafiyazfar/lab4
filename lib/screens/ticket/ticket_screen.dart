@@ -19,6 +19,7 @@ class TicketScreen extends StatefulWidget {
 class _TicketScreenState extends State<TicketScreen> {
   late int ticketIndex = 0;
 
+  @override
   void didChangeDependencies() {
     if (ModalRoute.of(context)!.settings.arguments != null) {
       var args = ModalRoute.of(context)!.settings.arguments as Map;
