@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ticket_app/base/res/styles/app_styles.dart';
 import 'package:ticket_app/base/utils/all_json.dart';
+import 'package:ticket_app/controller/text_expansion_controller.dart';
+import 'package:get/get.dart';
 
 class HotelDetail extends StatefulWidget {
   const HotelDetail({super.key});
@@ -88,7 +90,8 @@ class _HotelDetailState extends State<HotelDetail> {
             delegate: SliverChildListDelegate([
               Padding(
                 padding: EdgeInsets.all(16.0),
-                child: Text("In this article, we will create "),
+                child: ExpandedTextWidget(text: hotelList[index]['detail']),
+                //Text("In this article, we will create "),
               ),
               Padding(
                 padding: EdgeInsets.all(16.0),
@@ -101,13 +104,13 @@ class _HotelDetailState extends State<HotelDetail> {
                 height: 200.0,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
+                  itemCount: hotelList[index]["images"].length,
+                  itemBuilder: (context, imagesIndex) {
                     return Container(
                       margin: EdgeInsets.all(16),
                       color: Colors.red,
-                      child: Image.network(
-                        "https://via.placeholder.com/200x200",
+                      child: Image.asset(
+                        "assets/images/${hotelList[index]["images"][imagesIndex]}",
                       ),
                     );
                   },
@@ -118,5 +121,42 @@ class _HotelDetailState extends State<HotelDetail> {
         ],
       ),
     );
+  }
+}
+
+class ExpandedTextWidget extends StatelessWidget {
+  ExpandedTextWidget({super.key, required this.text});
+  final String text;
+
+  final TextExpansionController controller = Get.put(TextExpansionController());
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      var textWidget = Text(
+        text,
+        maxLines: controller.isExpanded.value ? null : 9,
+        overflow:
+            controller.isExpanded.value
+                ? TextOverflow.visible
+                : TextOverflow.ellipsis,
+      );
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          textWidget,
+          GestureDetector(
+            onTap: () {
+              controller.toggleExpansion();
+            },
+            child: Text(
+              controller.isExpanded.value ? 'Less' : 'More',
+              style: AppStyles.textStyle.copyWith(
+                color: AppStyles.primaryColor,
+              ),
+            ),
+          ),
+        ],
+      );
+    });
   }
 }

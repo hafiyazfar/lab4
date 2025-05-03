@@ -47,7 +47,6 @@ class HotelGridView extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {
-        print("my index $index");
         Navigator.pushNamed(
           context,
           AppRoutes.hotelDetail,

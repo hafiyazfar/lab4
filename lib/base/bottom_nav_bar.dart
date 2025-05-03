@@ -1,76 +1,69 @@
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:ticket_app/controller/bottom_nav_controller.dart';
+import 'package:ticket_app/screens/profile/profile.dart';
 import 'package:ticket_app/screens/search/search_screen.dart';
 import 'package:ticket_app/screens/ticket/ticket_screen.dart';
 
 import '../screens/home/home_screen.dart';
 
-class bottomNavBar extends StatefulWidget {
-  const bottomNavBar({super.key});
+class BottomNavBar extends StatelessWidget {
+  BottomNavBar({super.key});
 
-  @override
-  State<bottomNavBar> createState() => _bottomNavBarState();
-}
-
-class _bottomNavBarState extends State<bottomNavBar> {
+  //dependency injection
+  final BottomNavController controller = Get.put(BottomNavController());
   //list is iterated using index
   final appScreens = [
     const HomeScreen(),
     const SearchScreen(),
     const TicketScreen(),
-    const Center(child: Text("Profile")),
+    const ProfileScreen(),
   ];
-
-  //change our index for BottomNavBar
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: appScreens[_selectedIndex],
+    return Obx(() {
+      return Scaffold(
+        body: appScreens[controller.selectedIndex.value],
 
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: Colors.blueGrey,
-        unselectedItemColor: const Color(0xFF526400),
-        showSelectedLabels: false,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(FluentSystemIcons.ic_fluent_home_regular),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: controller.selectedIndex.value,
+          onTap: controller.onItemTapped,
+          selectedItemColor: Colors.blueGrey,
+          unselectedItemColor: const Color(0xFF526400),
+          showSelectedLabels: false,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(FluentSystemIcons.ic_fluent_home_regular),
 
-            activeIcon: Icon(FluentSystemIcons.ic_fluent_home_filled),
-            label: "Home",
-          ),
+              activeIcon: Icon(FluentSystemIcons.ic_fluent_home_filled),
+              label: "Home",
+            ),
 
-          BottomNavigationBarItem(
-            icon: Icon(FluentSystemIcons.ic_fluent_search_regular),
+            BottomNavigationBarItem(
+              icon: Icon(FluentSystemIcons.ic_fluent_search_regular),
 
-            activeIcon: Icon(FluentSystemIcons.ic_fluent_search_filled),
-            label: "Search",
-          ),
+              activeIcon: Icon(FluentSystemIcons.ic_fluent_search_filled),
+              label: "Search",
+            ),
 
-          BottomNavigationBarItem(
-            icon: Icon(FluentSystemIcons.ic_fluent_ticket_regular),
+            BottomNavigationBarItem(
+              icon: Icon(FluentSystemIcons.ic_fluent_ticket_regular),
 
-            activeIcon: Icon(FluentSystemIcons.ic_fluent_ticket_filled),
-            label: "Tickets",
-          ),
+              activeIcon: Icon(FluentSystemIcons.ic_fluent_ticket_filled),
+              label: "Tickets",
+            ),
 
-          BottomNavigationBarItem(
-            icon: Icon(FluentSystemIcons.ic_fluent_person_regular),
+            BottomNavigationBarItem(
+              icon: Icon(FluentSystemIcons.ic_fluent_person_regular),
 
-            activeIcon: Icon(FluentSystemIcons.ic_fluent_person_filled),
-            label: "Profile",
-          ),
-        ],
-      ),
-    );
+              activeIcon: Icon(FluentSystemIcons.ic_fluent_person_filled),
+              label: "Profile",
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
